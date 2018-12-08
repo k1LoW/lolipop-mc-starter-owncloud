@@ -25,8 +25,10 @@ install:
 	$(eval INSTALLED=$(shell ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'if [ -f /var/www/html/.lolipop-mc-starter-installed ]; then echo "already installed"; fi'))
 	@if [ -n "${INSTALLED}" ]; then echo "既にロリポップ！マネージドクラウド スターターによってインストールされています" && exit 1; fi
 	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'mkdir -p /var/www/src'
-	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'wget -O /var/www/src/owncloud.zip https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.zip'
-	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'unzip /var/www/src/owncloud.zip'
+	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'wget -O /var/www/src/owncloud-${OWNCLOUD_VERSION}.zip https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.zip'
+	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'wget -O /var/www/src/owncloud-${OWNCLOUD_VERSION}.zip.sha256 https://download.owncloud.org/community/owncloud-${OWNCLOUD_VERSION}.zip.sha256'
+	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'cd /var/www/src && sha256sum -c owncloud-${OWNCLOUD_VERSION}.zip.sha256 < owncloud-${OWNCLOUD_VERSION}.zip'
+	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'unzip /var/www/src/owncloud-${OWNCLOUD_VERSION}.zip'
 	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'mv html html.backup'
 	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'mv owncloud html'
 	ssh -p ${SSH_PORT} ${SSH_USER}@${SSH_HOST} 'touch /var/www/html/.lolipop-mc-starter-installed'
